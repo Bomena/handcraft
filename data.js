@@ -1,7 +1,7 @@
 let robot_arm = new ROSLIB.Topic({
     ros : ros,
-    name : 'robot_arm',
-    messageType : 'sensor_msgs/CompressedImage'
+    name : 'arm_command',
+    messageType : 'std_msgs/Int16MultiArray'
 });
 
 let front = new ROSLIB.Topic({
@@ -32,9 +32,9 @@ let back = new ROSLIB.Topic({
 
 robot_arm.subscribe(function(message) {
     console.log("robot_arm?");
-    let image = new Image();
-    image.src = "data:image/jpg;base64, " + message.data;
-    document.getElementById("robot_arm").src = image.src;
+    // let image = new Image();
+    // image.src = "data:image/jpg;base64, " + message.data;
+    // document.getElementById("robot_arm").src = image.src;
 });
 
 front.subscribe(function(message) {
