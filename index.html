@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" />
+        <link rel="stylesheet" href="style.css?afterwe">
+        <!-- <link rel="stylesheet" href="https://js.arcgis.com/3.41/esri/css/esri.css"> -->
+        <!-- 
+        ArcGIS API for JavaScript, https://js.arcgis.com
+        For more information about the widget_locate sample, read the original sample description at developers.arcgis.com.
+        https://developers.arcgis.com/javascript/3/jssamples/widget_locate.html  
+        -->
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+        <title>INHASTRO</title>
+        <script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+        <script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+        <script type="text/javascript" src="server.js"></script>
+        <script type="module" src="data.js"></script>
+        <script type="module" src="atitude.js"></script>
+        <script type="module" src="status.js"></script>
+        <script type="module" src="app.js"></script>
+        <script src="record.js"></script>
+        <script src="https://js.arcgis.com/3.41/"></script>
+        <script type="module" src="map.js"></script>
+    </head>
+    <body>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&v=weekly" defer></script>
+        <div class="grid">
+            <div>
+                <h1 class="title">INHASTRO</h1>
+                <div class="cam_set">
+                    <div class="cam">
+                        <img id="left_up" class="pic" src="" width="1152" height="648">
+                        <img id="robot_arm" class="pic" src="" width="1152" height="648">
+                        <img id="right_up" class="pic" src="" width="1152" height="648">
+                        <img id="speedometer" class="pic" src="" width="750" height="648">
+                    </div>
+                    <div class="cam">
+                        <img id="left" class="pic" src="" width="1152" height="648">
+                        <img id="front" class="pic" src="" width="1152" height="648">
+                        <img id="right" class="pic" src="" width="1152" height="648">
+                        <img id="no" class="pic" src="" width="750" height="648">
+                    </div>
+                    <div class="cam">
+                        <img id="left_down" class="pic" src="" width="1152" height="648">
+                        <img id="back" class="pic" src="" width="1152" height="648">
+                        <img id="right_down" class="pic" src="" width="1152" height="648">
+                        <div class="grid2">
+                            <div class="cell"></div>
+                            <div class="cell">
+                              <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAACXklEQVR4nO2Zv07cQBCHT0BAoUxCw7+XQKBAxUtEIJAo8wogHgDoAQGhowRBigANBR0VDQge4MJBcRBazlB8aJSNcKyzb9a7ZxvJn2TJOt/N/saanZmdq1RKSkqcATqBcWAR2AeugUfg2Vxyf2WeyXe+Ah1FED4ErAA17LkBloHBPIT3AVtAgDsBsAF8yUr8DPAH/zwA0+0U/gHYpv1sylq+xfcCx2THkazp881nKf4fJ0C3DweyCJs4NlzFz5I/U2nFfwbu81bP34xnn2JNni8K67biBz0VKV8EwLCNA9IeuPIC7JpL7l1Z1orvMH2KC3VgMmRzBKg62qxJ06hxQLpKF86A/iZ2+80zF8Y0Dki7m5YfQE+C7W7H5LCgceAghWGJ8fmWxt/WmAOeUqyzpzEuBw8b7oAJrfhIqN5arnWpMWzTKp/HpbdQuOwAHxPOFacW691rHNDm/4O4eG+yYZtu7JCj2rBtVDw6MJAQGhJWUeSz8YTC6c0BVQjF/PZ7ixcQu9nxGEKqTeyYHreivT4eN7EqHj0UqP8SgM80qipk5rsTMfFu3XKgo3WtMUMnDa3iXUtgbGkY1TZzvykeVfU0z0zMisaSSnxBDzSNuLqT5ISM+4rCqpV448CnghzqH1LPTWVWmbd64Fsq8SEnZFaZF2tO4kN/XvzMQfwh0OXsQGi4KwPXrPjlbbgbGfJmkZnWvL35GEem2pSd6s4b1nJuum4KjCsNyfOStjMRH3FkwLQdaXon+c2SdYVtkyPSAI7J3EZ6djl4mJNdYC65vzDP5qWrLMTfrCUllffPK+qn4GAiDopaAAAAAElFTkSuQmCC" width="200" height="200" alt="Up Arrow" class="arrow">
+                            </div>
+                            <div class="cell"></div>
+                            <div class="cell">
+                              <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAACNUlEQVR4nO2ZuUrEUBSGh3EDS5fC9S0UFXwMUbSw00dQfADH3hEdbGxVHAuXxs5Ca0UfwLVwq2e0+OTgFYYhwbsmEfJBIJCZk/9Pck7OPSkUcnJynAFagHFgBTgAboEP4FNtsn+jjslvxoBiFoQPAWvAI+Y8ACVgMA3hvUAFqONOHdgEepISPwu84583YCak8DZgm/Bsybl8i+8ETkmOEzmnzyufpPhfzoB2HwaSeGzi2HQVP0f6TNuK7wZe01bPT8UzL7Gqzrsib96BiNgLhnE2TMUPenhJXQAdEbGl5agZxqoDwyYGpD1w4Qnoi4jbBzxbxizpii+qPsUWad4mY8rxuUPcR2kadQzILXZhIWBOjeoYkHbXlkpMTNOkjWNZx0CV9JM2jn0dA7LwMOU5QNJGca1jwLRV/pKrHBGnXd0Vn7zqGDCt/7sBk7aZWggDe1kz8G7xCE1k6RG6sQgsidqflSSuWga/jCmjY0mX0RWHE+zExJz3ZGBJx4BcMRcWAyb1iG4zd5/BZu5Oe5qnJmYuhEjqVS3xHhc0PpO6FrWy+8uEjPtcqUbNPi2603Uj8eokXRlZ1L9Zz01lVpm2emDKSnyDCZlVpkXZSXzDx4vDFMQfA63OBhqGuzJwTYojb8PdpheRj8r0F2VvVz7GyHSg6vTinLCGc9MNT11mTeq8lO1ExDcZGVBth03vJP9ZNX7DBjIiDeCozG2kZ5eFh1rZ1dUm+1fq2JJ0lZn4zJqTU/j/fAOmguAaWo8HjwAAAABJRU5ErkJggg==" width="200" height="200" alt="Left Arrow" class="arrow">
+                            </div>
+                            <div class="cell"></div>
+                            <div class="cell">
+                              <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAACJklEQVR4nO2ZS0oDQRCGg09w6WOhRm+hqOAxRNF9PILiAYz7RHwdQdSFj407F7pW9AA+Fya6TnTxSWELQWage6p7JuL8MDDQSfX/D101f9UUCjly5FAD6ASmgTXgALgD3oEPc8n9rVmT30wBHe1AfAzYAJ5wxyNQBopZEB8CdoAmejSBLWAwLfKLwBv+UQcWQhLvBvYIj23Zyzf5PuCM9HAqe/p88mmS/8E50ONDQBrHJg5bWvJLZI/5pOQHgFrW7PmueO4l1tR5F5QiYowChx5EbLqSLyZ4SYllmI0pAhdKAU1g3EWA2IMkeAGGI+KNmDUNyrbkO4xPSYoroDcirhi4hiLuk5hGGwHiKrXYiYm9rIw7aSNA7K4PlGLi7ypirtoI8FE1QiX1vo0AaTx8wXdS39gI8G2VL6M8DTADfDrGqtkI8NGk2Cb1vmOcxr8Q8JbSEZJyHeQIpZHEwyGT+PCvl9G1wC8yV5fbihUbAeJZQiVtSRl3wtbMPSiTNoSZu7ee5pmJme+kfUaHdSvybdrQNKS7sxZgNpZxn7alLHqqahUn8mbz/jZp6uuJ56Yyq8yaPTCXiHyLCJlVZoWqinzLx4ujDMifAF1qAS3DXRm4poVjb8PdX+XQtTIlQdXbk48RMh+oOr2qE9ZxbrqptAY/kBgVKdupkI+YfZYTeif5z7rzGzaQEDGAkzK3MW3ijensmuaS+2uztiKusi0+s+bIUfj7+AIPGeAe4ou82gAAAABJRU5ErkJggg==" width="200" height="200" alt="Right Arrow" class="arrow">
+                            </div>
+                            <div class="cell"></div>
+                            <div class="cell">
+                              <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAACWklEQVR4nO2Zu04bQRSGLa6CkiRFwOQtQAlVXiIiSqSUvIIRDwD0sQVOurQGUuTSpKAifSx4gATjwlxabFJ80RGTaLVi8JmLdzfSfpKllbwz+//WzJl/jyuVkpKSYIBx4BmwAewDJ8AVcGM+cn1svpN7ngJjRRC+CGwDHdw5BbaAah7CHwFNYEA4A2AHeJiV+FfAJfG5AF6OUvgk8J7RsyvPii1+FvhKdnyRZ8b85bMU/5dvwFQMA1ksGxs7oeJfkz+rvuIfAOd5q+e24rmXWFPni0LDVXw10iEViwHwxMWAxIOisaUVP2ZyStHoSGjUGJBUqWEtYhZaU967rDEgcXcoCbPdAPFdmcPMpWFdY+BAayCRTA89xB8BjxPzaGhpDBy7GDBjphzLbjMdE9DR1hhQRWXL2DfA9bD1bhmr4VxjQLsxFyzjbfvi33q3nDsa+jENHNjSIjAPfE/cK9fzlnungY8xDVz6bkTLvmg6GI2yhFSbOMGZbWkMec6KRwluRyujKX4DNQfxvodgK9pBZuEDMHPP3LLe3wXMX9MYkKZTCHduWI/1fhdL2jD3izB6wPPA9Z7mp7qbZzpmoci+aAF75jqUTZX4gr7Q9G0H530mpN1XFN46iTcG5gryUn/h3TeVXmXe6oEXXuITJqRXmRf1IPGJPy+0YSsmn4GJYAOJ5q40XLPiU7TmbqrJm0Vlqkf75S1GVkdUnXrBG9axb9owB0wofanzUrYzEZ8ysmBih092kjGbzifsiIxIAFyWvo3JP23zZjcwH7n+Yb6rSaosxN+sJSWV/58/p2zgOcuYBDIAAAAASUVORK5CYII=" width="200" height="200" alt="Down Arrow" class="arrow">
+                            </div>
+                            <div class="cell"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <!-- <div id="record">
+                    <h1 id="plus" class="subTitle">Data</h1>
+                    <input type="button" id="btn" class="notRecord" value="log" onclick="recordingStart()">
+                </div> -->
+                <!-- <div id="dataLine">
+                    <div id="size" class="table">
+                        <div class="line">Acceleration</div>
+                        <div class="line">Angular Velocity</div>
+                        <div class="line">GPS Time</div>
+                        <div class="line">Latitude</div>
+                        <div class="line">Longitude</div>
+                        <div>Altitude</div>
+                    </div>
+                    <div class="table">
+                        <div id="isAuto">N/A</div>
+                        <div id="wayPoint">N/A</div>
+                        <div id="gpsTime">N/A</div>
+                        <div id="latitude">N/A</div>
+                        <div id="longitude">N/A</div>
+                        <div id="altitude">N/A</div>
+                    </div>
+                </div> -->
+            </div>
+            <!-- <div>
+                <h1 class="title">Map</h1>
+                <div id="map" class="map">
+                    <div id="LocateButton"></div>
+                </div>
+                <div id="grid2" class="grid">
+                    <div>
+                        <h1 class="subTitle">Attitude</h1>
+                        <div id="attitudeLine">
+                            <div id="size" class="attitude">
+                                <div class="line">Roll</div>
+                                <div class="line">Pitch</div>
+                                <div>Yaw</div>
+                            </div> 
+                            <div class="attitude">
+                                <div id="roll">N/A</div>
+                                <div id="pitch">N/A</div>
+                                <div id="yaw">N/A</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h1 class="subTitle">Status</h1>
+                        <div id="statusLine">
+                            <div id="size" class="status">
+                                <div class="line">State</div>
+                                <div>Speed</div>
+                            </div>
+                        <div class="status">
+                            <div id="state">N/A</div>
+                            <div id="speed">N/A</div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </body>
+</html>
